@@ -1,12 +1,28 @@
+// API
 const endpoint =
   "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
 
+// Event handlers
+const searchInput = document.querySelector(".search");
+const suggestions = document.querySelector(".suggestions");
+
+searchInput.addEventListener("change", displayMatches);
+searchInput.addEventListener("keyup", displayMatches);
+
+// Global Variable
 const cities = [];
 
+// Fetching the API
 fetch(endpoint)
   .then((res) => res.json())
   .then((data) => cities.push(...data));
 
+/**
+ * Function for finding the matches
+ * @param {String} wordToMatch
+ * @param {Array} cities
+ * @returns search result
+ */
 function findMatches(wordToMatch, cities) {
   return cities.filter((place) => {
     const regex = new RegExp(wordToMatch, "gi");
@@ -14,10 +30,18 @@ function findMatches(wordToMatch, cities) {
   });
 }
 
+/**
+ * Function for separate the population by commas
+ * @param {number} x
+ * @returns regex method
+ */
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+/**
+ * Function that displays the suggestion
+ */
 function displayMatches() {
   const matchArray = findMatches(this.value, cities);
   const html = matchArray
@@ -41,9 +65,3 @@ function displayMatches() {
     .join("");
   suggestions.innerHTML = html;
 }
-
-const searchInput = document.querySelector(".search");
-const suggestions = document.querySelector(".suggestions");
-
-searchInput.addEventListener("change", displayMatches);
-searchInput.addEventListener("keyup", displayMatches);
